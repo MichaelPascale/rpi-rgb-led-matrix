@@ -1,4 +1,3 @@
-import os
 import requests
 import numpy as np
 from datetime import datetime as dt
@@ -6,16 +5,17 @@ from datetime import datetime as dt
 
 class OpenWeather:
 
-    # Time of last weather update
-    last = dt.fromtimestamp(0)
-    # Cached data
-    data = {}
-
     def __init__(self, key, lat, lon, units='imperial', freq=10):
         self.key  = key       # openweather api key
         self.lat  = lat       # latitude
         self.lon  = lon       # longitude
         self.freq = freq * 60 # refresh in seconds
+
+        # Time of last weather update
+        self.last = dt.fromtimestamp(0)
+        # Cached data
+        self.data = {}
+
         self.uri  = f"https://api.openweathermap.org/data/3.0/onecall?appid={key}&units={units}&lat={lat}&lon={lon}"
 
     def _update(self):
@@ -25,7 +25,7 @@ class OpenWeather:
         else:
             
             try:
-                response = requests.get(OW_URI)
+                response = requests.get(self.uri)
                 assert response.status_code == 200
                 self.data = response.json()
 
